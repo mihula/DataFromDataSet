@@ -28,47 +28,34 @@ namespace DataFromDataSet
     /// </summary>
     private void InitializeComponent()
     {
-      this.btnRunExisting = new System.Windows.Forms.Button();
-      this.btnCreateNew = new System.Windows.Forms.Button();
-      this.SuspendLayout();
-      // 
-      // btnRunExisting
-      // 
-      this.btnRunExisting.Location = new System.Drawing.Point(76, 140);
-      this.btnRunExisting.Name = "btnRunExisting";
-      this.btnRunExisting.Size = new System.Drawing.Size(140, 23);
-      this.btnRunExisting.TabIndex = 0;
-      this.btnRunExisting.Text = "Run Existing Report";
-      this.btnRunExisting.UseVisualStyleBackColor = true;
-      this.btnRunExisting.Click += new System.EventHandler(this.btnRunExisting_Click);
-      // 
-      // btnCreateNew
-      // 
-      this.btnCreateNew.Location = new System.Drawing.Point(76, 104);
-      this.btnCreateNew.Name = "btnCreateNew";
-      this.btnCreateNew.Size = new System.Drawing.Size(140, 23);
-      this.btnCreateNew.TabIndex = 1;
-      this.btnCreateNew.Text = "Create New Report";
-      this.btnCreateNew.UseVisualStyleBackColor = true;
-      this.btnCreateNew.Click += new System.EventHandler(this.btnCreateNew_Click);
-      // 
-      // Form1
-      // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(292, 236);
-      this.Controls.Add(this.btnCreateNew);
-      this.Controls.Add(this.btnRunExisting);
-      this.Name = "Form1";
-      this.Text = "Data From DataSet";
-      this.ResumeLayout(false);
+            this.btnRun = new System.Windows.Forms.Button();
+            this.SuspendLayout();
+            // 
+            // btnRun
+            // 
+            this.btnRun.Location = new System.Drawing.Point(12, 12);
+            this.btnRun.Name = "btnRun";
+            this.btnRun.Size = new System.Drawing.Size(273, 23);
+            this.btnRun.TabIndex = 0;
+            this.btnRun.Text = "Run Report";
+            this.btnRun.UseVisualStyleBackColor = true;
+            this.btnRun.Click += new System.EventHandler(this.btnRunExisting_Click);
+            // 
+            // Form1
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(297, 51);
+            this.Controls.Add(this.btnRun);
+            this.Name = "Form1";
+            this.Text = "Data From DataSet";
+            this.ResumeLayout(false);
 
     }
 
     #endregion
 
-    private System.Windows.Forms.Button btnRunExisting;
-    private System.Windows.Forms.Button btnCreateNew;
+    private System.Windows.Forms.Button btnRun;
   }
 }
 
