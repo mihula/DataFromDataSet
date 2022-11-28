@@ -7,7 +7,9 @@ using System.ComponentModel.Design;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Net.Sockets;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
 using FastReport;
@@ -69,42 +71,11 @@ namespace DataFromDataSet
                 Columns.Add("TITLE", typeof(string));
             }
 
-            //public void DataLoad(TableDataSource tableDataSource)
-            //{
-            //    var masterDataSource = this.MasterDataTable?.ReportDataSource;
-            //    var masterRownNo = masterDataSource?.CurrentRowNo ?? 0;
-            //    int masterrowid = 0;
-            //    if (masterDataSource != null)
-            //    {                    
-            //        masterrowid  = ((DataRow)masterDataSource.CurrentRow)[0] as int? ?? 0;
-            //    }
-
-            //    int rowid = 0;
-            //    if (this.SelectModel.Name == "SERIES")
-            //    {
-            //        this.Rows.Add(new object[] { rowid++, masterrowid, (decimal)123456, "SERIES 123456" });
-            //        this.Rows.Add(new object[] { rowid++, masterrowid, (decimal)888, "SERIES 888" });
-            //        this.Rows.Add(new object[] { rowid++, masterrowid, (decimal)98989, "SERIES 98989" });
-            //    }
-            //    else if (this.SelectModel.Name == "PROG")
-            //    {
-            //        for (int i = 1; i < 10 + (5 * masterRownNo); i++)
-            //        {
-            //            this.Rows.Add(new object[] { rowid++, masterrowid, (decimal)((100 * (1+masterRownNo)) + i), $"Master {masterRownNo}, Ep {i + 1}" });
-            //        }
-            //    }
-            //}
-        }
-
-        public class ReportTableAdapter : DataTable
-        {
-            public int Fill(DataTable dataTable)
+            public void DataLoad(TableDataSource tableDataSource)
             {
-                var reportDataTable = dataTable as ReportDataTable;
-                if (reportDataTable == null) return 0;
-                reportDataTable.Rows.Clear();
+                this.Rows.Clear();
 
-                var masterDataSource = reportDataTable.MasterDataTable?.ReportDataSource;
+                var masterDataSource = this.MasterDataTable?.ReportDataSource;
                 var masterRownNo = masterDataSource?.CurrentRowNo ?? 0;
                 int masterrowid = 0;
                 if (masterDataSource != null)
@@ -113,23 +84,56 @@ namespace DataFromDataSet
                 }
 
                 int rowid = 0;
-                if (reportDataTable.SelectModel.Name == "SERIES")
+                if (this.SelectModel.Name == "SERIES")
                 {
-                    reportDataTable.Rows.Add(new object[] { rowid++, masterrowid, (decimal)123456, "SERIES 123456" });
-                    reportDataTable.Rows.Add(new object[] { rowid++, masterrowid, (decimal)888, "SERIES 888" });
-                    reportDataTable.Rows.Add(new object[] { rowid++, masterrowid, (decimal)98989, "SERIES 98989" });
+                    this.Rows.Add(new object[] { rowid++, masterrowid, (decimal)123456, "SERIES 123456" });
+                    this.Rows.Add(new object[] { rowid++, masterrowid, (decimal)888, "SERIES 888" });
+                    this.Rows.Add(new object[] { rowid++, masterrowid, (decimal)98989, "SERIES 98989" });
                 }
-                else if (reportDataTable.SelectModel.Name == "PROG")
+                else if (this.SelectModel.Name == "PROG")
                 {
-                    for (int i = 1; i < 10 + (5 * masterRownNo); i++)
+                    for (int i = 0; i < 5 + (2 * masterRownNo); i++)
                     {
-                        reportDataTable.Rows.Add(new object[] { rowid++, masterrowid, (decimal)((100 * (1 + masterRownNo)) + i), $"Master {masterRownNo}, Ep {i + 1}" });
+                        this.Rows.Add(new object[] { rowid++, masterrowid, (decimal)((100 * (1 + masterRownNo)) + i), $"Master {masterRownNo}, Ep {i + 1}" });
                     }
                 }
-                
-                return rowid;
             }
         }
+
+        //public class ReportTableAdapter : DataTable
+        //{
+        //    public int Fill(DataTable dataTable)
+        //    {
+        //        var reportDataTable = dataTable as ReportDataTable;
+        //        if (reportDataTable == null) return 0;
+        //        //reportDataTable.Rows.Clear();
+
+        //        var masterDataSource = reportDataTable.MasterDataTable?.ReportDataSource;
+        //        var masterRownNo = masterDataSource?.CurrentRowNo ?? 0;
+        //        int masterrowid = 0;
+        //        if (masterDataSource != null)
+        //        {
+        //            masterrowid = ((DataRow)masterDataSource.CurrentRow)[0] as int? ?? 0;
+        //        }
+
+        //        int rowid = 0;
+        //        if (reportDataTable.SelectModel.Name == "SERIES")
+        //        {
+        //            reportDataTable.Rows.Add(new object[] { rowid++, masterrowid, (decimal)123456, "SERIES 123456" });
+        //            reportDataTable.Rows.Add(new object[] { rowid++, masterrowid, (decimal)888, "SERIES 888" });
+        //            reportDataTable.Rows.Add(new object[] { rowid++, masterrowid, (decimal)98989, "SERIES 98989" });
+        //        }
+        //        else if (reportDataTable.SelectModel.Name == "PROG")
+        //        {
+        //            for (int i = 1; i < 10 + (5 * masterRownNo); i++)
+        //            {
+        //                reportDataTable.Rows.Add(new object[] { rowid++, masterrowid, (decimal)((100 * (1 + masterRownNo)) + i), $"Master {masterRownNo}, Ep {i + 1}" });
+        //            }
+        //        }
+
+        //        return rowid;
+        //    }
+        //}
 
         //public class QueryDataSource : DataSourceBase
         //{
@@ -283,30 +287,41 @@ namespace DataFromDataSet
 
                 report.RegisterData(item, item.TableName);
                 item.ReportDataSource = report.GetDataSource(item.TableName);
+                item.ReportDataSource.Load += (s, e) => { item.DataLoad(s as TableDataSource); };
                 item.ReportDataSource.Enabled = true;
-                //item.ReportDataSource.Load += (s, e) => { item.DataLoad(s as TableDataSource); };
-
-                if (item.MasterDataTable != null)
+                //item.ReportDataSource.ForceLoadData = true;
+                var tableDts = item.ReportDataSource as TableDataSource;
+                if (tableDts != null)
                 {
-                    var relationName = item.MasterDataTable.TableName + "-" + item.TableName;
-                    Relation relation = new Relation();
-                    relation.ReferenceName = relationName;
-                    relation.Reference = null;
-                    relation.Name = relationName;
-                    relation.Enabled = true;
-                    relation.ParentDataSource = item.MasterDataTable.ReportDataSource;
-                    relation.ChildDataSource = item.ReportDataSource;
-                    relation.ParentColumns = new string[] { "currentrowid" };
-                    relation.ChildColumns = new string[] { "masterrowid" };
-                    report.Dictionary.Relations.Add(relation);
+                    tableDts.Parameters.Add(new CommandParameter() { Name = "SERIES_ID", DataType = 107 } );
                 }
+
+                //if (item.MasterDataTable != null)
+                //{
+                //    var relationName = item.MasterDataTable.TableName + "-" + item.TableName;
+                //    Relation relation = new Relation();
+                //    relation.ReferenceName = relationName;
+                //    relation.Reference = null;
+                //    relation.Name = relationName;
+                //    relation.Enabled = true;
+                //    relation.ParentDataSource = item.MasterDataTable.ReportDataSource;
+                //    relation.ChildDataSource = item.ReportDataSource;
+                //    relation.ParentColumns = new string[] { "currentrowid" };
+                //    relation.ChildColumns = new string[] { "masterrowid" };
+                //    report.Dictionary.Relations.Add(relation);
+                //}
 
                 foreach (var subitem in item.SubDataTables)
                     stack.Push(subitem);
             }
 
-            // design the report
-            report.Design();
+            // preperni a ukaz preview
+            report.Prepare();
+
+            report.ShowPrepared();
+
+            //// design the report
+            //report.Design();
 
             // free resources used by report
             report.Dispose();
