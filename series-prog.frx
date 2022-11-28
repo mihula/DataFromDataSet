@@ -1,13 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="11/25/2022 11:09:58" ReportInfo.Modified="11/25/2022 11:37:40" ReportInfo.CreatorVersion="2022.3.12.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="11/25/2022 11:09:58" ReportInfo.Modified="11/28/2022 14:27:49" ReportInfo.CreatorVersion="2022.3.12.0">
   <Dictionary>
     <TableDataSource Name="SERIES" ReferenceName="SERIES" DataType="System.Int32" Enabled="true">
       <Column Name="SERIES_ID" DataType="System.Decimal"/>
       <Column Name="TITLE" DataType="System.String"/>
+      <Column Name="currentrowid" DataType="System.Int32"/>
+      <Column Name="masterrowid" DataType="System.Int32"/>
     </TableDataSource>
     <TableDataSource Name="PROG" ReferenceName="PROG" DataType="System.Int32" Enabled="true">
       <Column Name="PROG_ID" DataType="System.Decimal"/>
       <Column Name="TITLE" DataType="System.String"/>
+      <Column Name="currentrowid" DataType="System.Int32"/>
+      <Column Name="masterrowid" DataType="System.Int32"/>
     </TableDataSource>
   </Dictionary>
   <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
@@ -16,7 +20,7 @@
       <TextObject Name="Text2" Left="28.35" Width="94.5" Height="18.9" Text="ID" Font="Arial, 10pt"/>
       <TextObject Name="Text4" Left="151.2" Width="94.5" Height="18.9" Text="TITLE" Font="Arial, 10pt"/>
     </PageHeaderBand>
-    <DataBand Name="Data1" Top="74.15" Width="718.2" Height="75.6" DataSource="SERIES">
+    <DataBand Name="Data1" Top="74.15" Width="718.2" Height="75.6" DataSource="SERIES" PrintIfDetailEmpty="true">
       <TextObject Name="Text1" Left="28.35" Top="28.35" Width="122.85" Height="18.9" Text="[SERIES.SERIES_ID]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="0" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
       <TextObject Name="Text3" Left="151.2" Top="28.35" Width="538.65" Height="18.9" Text="[SERIES.TITLE]" Font="Arial, 10pt"/>
       <DataBand Name="Data2" Top="153.75" Width="718.2" Height="37.8" DataSource="PROG">
